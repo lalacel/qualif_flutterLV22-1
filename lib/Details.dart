@@ -28,7 +28,8 @@ class _DetailsState extends State<Details> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
+    ThemeProvider themeProvider =
+        Provider.of<ThemeProvider>(context, listen: false);
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -82,7 +83,6 @@ class _DetailsState extends State<Details> {
               Tab(
                 icon: Icon(Icons.comment),
               ),
-              
             ]),
             backgroundColor: themeProvider.getTheme.secondaryHeaderColor,
           ),
@@ -118,17 +118,36 @@ class _DetailsState extends State<Details> {
                           labelText: 'Add Review',
                         )),
                     ElevatedButton(
-                        
                         onPressed: () => {
                               setState(() {
-                                widget.item.review.add(new Review(
-                                    review: commentController.text,
-                                    email: widget.email));
+                                if (commentController.text.length == 0) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text("Error"),
+                                          content: const Text(
+                                              "Review can't be empty"),
+                                          icon: const Icon(Icons.error),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("OK"))
+                                          ],
+                                        );
+                                      });
+                                } else {
+                                  widget.item.review.add(new Review(
+                                      review: commentController.text,
+                                      email: widget.email));
+                                }
                               })
                             },
-                        child: Text("Post Review",
-                         style: TextStyle(backgroundColor: themeProvider.getTheme.secondaryHeaderColor),)),
-                        
+                        child: Text(
+                          "Post Review",
+                        )),
                   ],
                 ),
               ),
