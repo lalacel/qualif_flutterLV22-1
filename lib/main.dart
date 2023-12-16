@@ -1,11 +1,10 @@
+
+
 import 'package:flutter/material.dart';
-import 'package:qualifflutter/Details.dart';
-import 'package:qualifflutter/Homepage.dart';
-import 'package:qualifflutter/Item.dart';
-import 'package:qualifflutter/Itemm.dart';
 import 'package:qualifflutter/Login.dart';
 import 'package:qualifflutter/Theme.dart';
 import 'package:provider/provider.dart';
+import 'package:qualifflutter/User.dart';
 
 void main() {
   return runApp(ChangeNotifierProvider(
@@ -13,6 +12,11 @@ void main() {
     create: (BuildContext context) => ThemeProvider(isLight: true),
   ));
 }
+
+List<User> Users = [
+  new User(username: "user1@mail.com", password: "password1"),
+  new User(username: "user2@mail.com", password: "password2")
+];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,6 +30,7 @@ class MyApp extends StatelessWidget {
           title: 'Watson',
           theme: themeProvider.getTheme,
           home: Login(),
+          themeAnimationCurve: Curves.easeIn,
         );
       },
     );

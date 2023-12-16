@@ -97,17 +97,20 @@ class Homepage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          CarouselSlider(
-            items: cars.map((e) => Image.asset(e.image)).toList(),
-            options: CarouselOptions(
-                autoPlay: true, autoPlayInterval: const Duration(seconds: 6)),
-          ),
           Expanded(
               child: ListView.builder(
                   itemCount: infos.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height*0.4,
+                          child: CarouselSlider(
+                            items: cars.map((e) => Image.asset(e.image)).toList(),
+                            options: CarouselOptions(
+                                autoPlay: true, autoPlayInterval: const Duration(seconds: 6)),
+                          ),
+                        ),
                         Image.asset(infos[index].image),
                         Padding(
                           padding: EdgeInsets.only(bottom: 13, top: 13),

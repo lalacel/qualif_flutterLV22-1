@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:js_util';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,44 +7,33 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:qualifflutter/Homepage.dart';
 import 'package:provider/provider.dart';
-import 'package:qualifflutter/Register.dart';
+import 'package:qualifflutter/Login.dart';
 import 'package:qualifflutter/Theme.dart';
+import 'package:qualifflutter/User.dart';
+import 'package:qualifflutter/main.dart';
 
-import 'User.dart';
-import 'main.dart';
-
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-  void handleLogin() {
+  void handleRegister() {
     String email = emailController.text.toString();
     String password = passwordController.text.toString();
     log(email);
-    bool found = false;
-    bool passwordMatch = false;
-    for(User u in Users){
-      if(u.username == email){
-        found = true;
-        if(u.password == password){
-          passwordMatch = true;
-        }
-      }
-    }
-    if (found == false ) {
+    if (password.length == 0 || email.length == 0) {
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: const Text("Error"),
-              content: const Text("Email is not registered"),
+              content: const Text("Email and password can't be empty"),
               icon: const Icon(Icons.error),
               actions: [
                 TextButton(
@@ -54,14 +44,30 @@ class _LoginState extends State<Login> {
               ],
             );
           });
-    }
-    else if(found == true && passwordMatch==false){
+    } else if (!email.contains("@")) {
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: const Text("Error"),
-              content: const Text("Invalid password"),
+              content: const Text("Email is wrong format"),
+              icon: const Icon(Icons.error),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("OK"))
+              ],
+            );
+          });
+    } else if (email.contains(RegExp(r'[A-Z]'))) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Error"),
+              content: const Text("Email can't contain capital letter"),
               icon: const Icon(Icons.error),
               actions: [
                 TextButton(
@@ -74,10 +80,11 @@ class _LoginState extends State<Login> {
           });
     }
     else{
-          Navigator.push(context, MaterialPageRoute(builder: ((context) {
-            return Homepage(email: emailController.text);
-          })));
-        
+      Users.add(new User(username: email, password: password));
+      Navigator.push(context, MaterialPageRoute(builder: ((context) {
+        return Login();
+      })));
+
     }
   }
 
@@ -86,15 +93,15 @@ class _LoginState extends State<Login> {
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(title: const Text("Watson"),
-      backgroundColor: themeProvider.getTheme.secondaryHeaderColor,),
+        backgroundColor: themeProvider.getTheme.secondaryHeaderColor,),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
-              child: Image.asset("assets/watson_logo.png"), 
-              height: MediaQuery.of(context).size.height*0.5
+                child: Image.asset("assets/watson_logo.png"),
+                height: MediaQuery.of(context).size.height*0.5
             ),
-            
+
             SizedBox(
               width: 250,
               child: TextField(
@@ -115,18 +122,18 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 20,
             ),
-            ElevatedButton(onPressed: handleLogin, child: Text("Login")),
-            SizedBox(
-              height: 20,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: ((context) {
-                  return Register();
-                })));
-              },
-              child: Text("Don't have account? Register"),
-            ),
+            ElevatedButton(onPressed: handleRegister, child: Text("Register")),
+          SizedBox(
+              height:20
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: ((context) {
+                return Login();
+              })));
+            },
+            child: Text("Have any account? Login"),
+          ),
           ],
         ),
       ),
